@@ -1,5 +1,6 @@
 package com.mx.apiRestaurante.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +46,14 @@ public class ComidaServImp {
 				repository.save(comida);
 			return bandera;
 		}
-		
+		@Transactional
 		public Comidas buscarXid(Long idCom) {
 			Comidas comidaEncontrad=repository.findById(idCom).orElse(null);
 			return comidaEncontrad;			
 			
 		}
+		
+		
 		@Transactional
 		public boolean editar(Comidas comida) {
 			boolean bandera=false;
@@ -64,6 +67,51 @@ public class ComidaServImp {
 			if (bandera==false)
 				bandera = false;
 			return bandera;
+		}
+		//Eliminar Registro por id
+		@Transactional
+		public boolean eliminarXid(Comidas comida) {
+			boolean band=false;
+			for (Comidas c: repository.findAll()) {
+				if (c.getIdCom().equals(comida.getIdCom())) {
+					repository.deleteById(comida.getIdCom());
+					band=true;
+					break;
+				}				
+			}		
+			if(band==false)
+				band=false;
+			return band ;
+			
+		}
+		@Transactional
+		//Se pone string por que recibra una cadena del POSTMAN
+		public boolean eliminarXnombre(String nombre) {
+			boolean band=false;			
+			//Se recorre toda la coleccion con un for each de ComidasRepository.encuentra todo
+			for(Comidas c:repository.findAll()) {
+				//Comparamos si existe un nombre com el de la cadena nombre entre a ComidasRepository 
+				if(c.getNombre().equals(nombre)) {
+					//y borre el elemento
+					repository.delete(c);
+					band=true;
+					break;
+				}
+					
+			}
+			return band;
+		}
+		
+		//Buscar pro fecha
+		@Transactional(readOnly = true)
+		public List<Comidas> buscarXfecha(Comidas comida) {
+			List<Comidas> lista=new ArrayList<>();
+			for(Comidas c:repository.findAll()) {
+				if(c.getFechaVenta().equals(comida.getFechaVenta())) {
+					lista.add(c);
+				}
+			}
+			return lista;
 		}
 }
 

@@ -57,6 +57,7 @@ public class ComidaWs {
 		return comidaImplementacion.buscarXid(comida.getIdCom());
 	}
 	
+	
 	//http://localhost:9000/api/ComidaWs/editar
 	//el editar-->Validar que esista el Id
 	@PostMapping("editar")
@@ -69,8 +70,39 @@ public class ComidaWs {
 	}
 	
 	//Eliminar -->Validar que el Id exista parta eliminar
+	//http://localhost:9000/api/ComidaWs/eliminaXid
+	@PostMapping("eliminaXid")
+	public ResponseEntity<?> eliminar(@RequestBody Comidas comida){
+		boolean respuesta=comidaImplementacion.eliminarXid(comida);
+		if(respuesta==true)
+			return new ResponseEntity<>("se ha eliminado el registro con id:  "+comida.getIdCom(),HttpStatus.CREATED);
+		else
+			return new ResponseEntity<>("El id no existe",HttpStatus.OK);
+	}
 	
-	//Se va acupar entity
-	//
+	
+	//http://localhost:9000/api/ComidaWs/eliminarXnombre
+	//Utilizamos el responseEntity para mandar mensajes POSTMAN
+	@PostMapping("eliminarXnombre")
+	public ResponseEntity<?> eliminarXnombre(@RequestBody Comidas comida){
+		boolean respuesta=comidaImplementacion.eliminarXnombre(comida.getNombre());
+		if(respuesta==true)
+			return new ResponseEntity<>("Se ha elimiando el registo con el nombre: "+comida.getNombre(),HttpStatus.CREATED);
+		else
+			return new ResponseEntity<>("Ese nombre no se encuentra en la BD",HttpStatus.OK);			
+	}
+	
+	
+	
+	//http://localhost:9000/api/ComidaWs/buscarXfecha
+	@PostMapping("buscarXfecha")
+	public ResponseEntity<?> buscarXfecha(@RequestBody Comidas comida){		
+		List<Comidas> response=comidaImplementacion.buscarXfecha(comida);
+		if (response.isEmpty())
+			return new ResponseEntity<>("la fecha no se encuenta en la BD",HttpStatus.NOT_FOUND);
+		else
+			return new ResponseEntity<>("Se encontro la comida por fecha: "+response, HttpStatus.OK);
+	}
+	
 }
 
